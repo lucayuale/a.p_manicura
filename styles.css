@@ -259,3 +259,74 @@ img {display:block;max-width:100%}
   .button:hover,.whatsapp-float:hover,.inspiration-grid figure:hover .finish,.gallery-item:hover img {transform:none}
   .service-row:hover .service-icon {translate:none}
 }
+
+@media (min-width: 1024px) {
+  .hero {
+    padding-block: clamp(32px, 6svh, 70px) clamp(44px, 8svh, 96px);
+  }
+
+  .editorial-art, .hero-image {
+    height: clamp(380px, min(46vw, 65svh), 610px);
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .hero-art.is-visible .lacquers { animation: none; }
+
+  .hero-art.is-visible .lacquers span {
+    animation: desktop-polish-arrive 3.6s cubic-bezier(.24,.67,.29,1) both;
+    transition: translate .48s ease, rotate .48s ease;
+  }
+
+  .hero-art.is-visible .lacquers span:nth-child(1) {
+    --arrival-x: -32px;
+    --arrival-y: 32px;
+    --lift-y: -14px;
+    --lift-angle: -8deg;
+  }
+
+  .hero-art.is-visible .lacquers span:nth-child(2) {
+    --arrival-x: 0px;
+    --arrival-y: 51px;
+    --lift-y: -28px;
+    --lift-angle: 5deg;
+    animation-delay: .16s;
+  }
+
+  .hero-art.is-visible .lacquers span:nth-child(3) {
+    --arrival-x: 29px;
+    --arrival-y: 37px;
+    --lift-y: -19px;
+    --lift-angle: 9deg;
+    animation-delay: .3s;
+  }
+
+  .hero-art.is-visible .art-inner::after {
+    background: linear-gradient(105deg, transparent 42%, #fff9ef 50%, transparent 58%);
+    animation: polish-shine 1.7s ease-in-out .7s both;
+  }
+
+  @keyframes desktop-polish-arrive {
+    0%   { opacity: 0; transform: translate(var(--arrival-x), var(--arrival-y)) scale(.9); }
+    38%  { opacity: 1; }
+    57%  { translate: 0 var(--lift-y); rotate: var(--lift-angle); }
+    100% { opacity: 1; translate: 0 0; rotate: 0deg; }
+  }
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero-art.is-visible .lacquers span { animation-fill-mode: backwards; }
+
+  .hero-art:hover .lacquers span {
+    translate: 0 var(--lift-y);
+    rotate: var(--lift-angle);
+  }
+
+  .hero-art:hover .art-inner::after { animation: polish-shine-hover 1.2s ease-out both; }
+
+  @keyframes polish-shine-hover {
+    from { transform: translateX(-55%); opacity: 0; }
+    45%  { opacity: .48; }
+    to   { transform: translateX(55%); opacity: 0; }
+  }
+}
