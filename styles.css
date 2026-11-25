@@ -199,3 +199,63 @@ img {display:block;max-width:100%}
   content:"";position:absolute;top:2px;right:1px;width:12px;height:1px;
   background:currentColor;transform:rotate(-45deg);transform-origin:right center;
 }
+
+/* Keep the chat shortcut available without covering the footer controls. */
+.whatsapp-float {
+  position:fixed; right:max(18px,env(safe-area-inset-right)); bottom:calc(18px + env(safe-area-inset-bottom));
+  z-index:35; display:grid; place-items:center; width:56px; height:56px;
+  color:#fff; background:#087452; border:1px solid #ffffff30; border-radius:50%;
+  box-shadow:0 8px 28px #21151b35; transition:background .2s,transform .2s;
+}
+.whatsapp-float:hover {background:#055d41;transform:translateY(-3px)}
+.whatsapp-float:focus-visible {outline-color:var(--paper);box-shadow:0 0 0 5px var(--ink)}
+.footer-bottom {padding-right:64px}
+.booking-status:focus {outline:none}
+.booking-status {width:fit-content;padding:8px 12px;background:var(--paper);border-radius:4px}
+
+.reveal {opacity:1;transform:none}
+.reveal.will-reveal:not(.is-visible):not(:focus-within) {opacity:0;transform:translateY(15px)}
+.service-row {transition:opacity .55s,transform .55s,color .22s}
+.service-icon {transition:translate .22s}
+.service-row:hover .service-icon {translate:3px -2px}
+.finish,.gallery-item img {transition:transform .35s ease,box-shadow .35s ease}
+
+@media (hover:hover) and (pointer:fine) {
+  .inspiration-grid figure:hover .finish,.gallery-item:hover img {
+    transform:translateY(-5px);box-shadow:0 12px 25px #251c2019;
+  }
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  .hero-copy.is-visible > * {animation:hero-enter .68s ease-out both}
+  .hero-copy.is-visible h1 {animation-delay:.06s}
+  .hero-copy.is-visible .hero-description {animation-delay:.13s}
+  .hero-copy.is-visible .hero-actions {animation-delay:.19s}
+  .hero-art.is-visible .lacquers {animation:polish-float 5.6s ease-in-out 2}
+  .hero-art.is-visible .art-inner::after {
+    content:"";position:absolute;z-index:2;inset:-30% -72%;pointer-events:none;
+    background:linear-gradient(105deg,transparent 44%,#fffc 50%,transparent 56%);
+    transform:translateX(-58%);animation:polish-shine 2s ease-out .4s both;
+  }
+  .service-row:nth-child(2) {transition-delay:.06s}
+  .service-row:nth-child(3) {transition-delay:.12s}
+  @keyframes hero-enter {
+    from {opacity:0;translate:0 14px}
+    to {opacity:1;translate:0 0}
+  }
+  @keyframes polish-float {
+    0%,100% {translate:0 0;rotate:0deg}
+    50% {translate:0 -10px;rotate:2deg}
+  }
+  @keyframes polish-shine {
+    from {transform:translateX(-58%);opacity:0}
+    25%,60% {opacity:.46}
+    to {transform:translateX(58%);opacity:0}
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .reveal.will-reveal:not(.is-visible):not(:focus-within) {opacity:1;transform:none}
+  .button:hover,.whatsapp-float:hover,.inspiration-grid figure:hover .finish,.gallery-item:hover img {transform:none}
+  .service-row:hover .service-icon {translate:none}
+}

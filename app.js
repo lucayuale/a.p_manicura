@@ -35,7 +35,7 @@
     if (embeddedUrl.port || !embeddedUrl.hostname.toLowerCase().endsWith('.setmore.com')) bookingUrl = '';
   }
   const bookingUrlWasProvided = Boolean(String(config.booking?.url || '').trim());
-  const whatsappBooking = externalAction('whatsapp');
+  const whatsappUrl = externalAction('whatsapp');
   const serviceDisplay = config.serviceDisplay || { price: true, duration: true };
 
   function setText(selector, value) {
@@ -144,13 +144,13 @@
   }
 
   function makeServiceNode(service, index) {
-    const action = mode === 'booking' ? document.createElement((bookingUrl && bookingMode === 'external') || (!bookingUrl && whatsappBooking) ? 'a' : 'button') : document.createElement('div');
+    const action = mode === 'booking' ? document.createElement(bookingUrl && bookingMode === 'external' ? 'a' : 'button') : document.createElement('div');
     action.className = 'service-row reveal' + (mode === 'basic' ? ' service-row-static' : '');
     if (action.tagName === 'A') {
-      action.href = bookingUrl || whatsappBooking;
+      action.href = bookingUrl;
       action.target = '_blank';
       action.rel = 'noopener noreferrer';
-      action.setAttribute('aria-label', `${local(service.title)} — ${t(bookingUrl ? 'manifestoBooking' : 'bookingWhatsApp')}`);
+      action.setAttribute('aria-label', `${local(service.title)} — ${t('bookNow')}`);
     } else if (mode === 'booking') {
       action.type = 'button';
       action.setAttribute('aria-label', `${local(service.title)} — ${t('bookNow')}`);
@@ -276,10 +276,16 @@
     links.replaceChildren();
     const phone = String(contact.phone || '').trim();
     const email = String(contact.email || '').trim();
-    const whatsapp = String(contact.whatsapp || '').replace(/\D/g, '');
     addContactLink(links, t('phoneLabel'), phone, phone ? 'tel:' + phone.replace(/[^\d+]/g, '') : '');
     addContactLink(links, t('emailLabel'), email, email ? 'mailto:' + email : '');
-    addContactLink(links, t('whatsappLabel'), contact.whatsappLabel || contact.whatsapp || '', whatsapp ? `https://wa.me/${whatsapp}` : '', true);
+    addContactLink(links, t('whatsappLabel'), contact.whatsappLabel || contact.whatsapp || '', whatsappUrl, true);
+    const floating = $('whatsapp-float');
+    floating.hidden = !whatsappUrl;
+    if (whatsappUrl) {
+      floating.href = whatsappUrl;
+      floating.setAttribute('aria-label', t('bookingWhatsApp'));
+      floating.title = t('bookingWhatsApp');
+    }
     for (const social of contact.socials || []) addContactLink(links, social.label, social.handle || social.url, validHttpsUrl(social.url), true);
     $('contact-block').hidden = links.childElementCount === 0;
     const footerLinks = $('footer-contact-links');
@@ -320,26 +326,22 @@
   function makeBookingAction(container, className, key) {
     container.replaceChildren();
     if (mode !== 'booking') return;
-    const action = document.createElement((bookingUrl && bookingMode === 'external') || (!bookingUrl && whatsappBooking) ? 'a' : 'button');
+    const action = document.createElement(bookingUrl && bookingMode === 'external' ? 'a' : 'button');
     action.className = className;
     if (bookingUrl && bookingMode === 'external') {
       action.href = bookingUrl;
       action.target = '_blank';
       action.rel = 'noopener noreferrer';
       action.setAttribute('aria-label', `${t(key)} — ${t('bookingOpenExternal')}`);
-    } else if (!bookingUrl && whatsappBooking) {
-      action.href = whatsappBooking;
-      action.target = '_blank';
-      action.rel = 'noopener noreferrer';
     } else if (bookingUrl && bookingMode === 'modal') {
       action.type = 'button';
       action.setAttribute('aria-haspopup', 'dialog');
       action.addEventListener('click', () => openBookingModal(action));
     } else {
       action.type = 'button';
-      action.addEventListener('click', showBookingStatus);
+      action.addEventListener('click', () => showBookingStatus());
     }
-    action.append(document.createTextNode(t(bookingUrl ? 'manifestoBooking' : (whatsappBooking ? 'bookingWhatsApp' : key)) + ' '));
+    action.append(document.createTextNode(t(key) + ' '));
     const arrow = document.createElement('span');
     arrow.className = 'button-arrow';
     arrow.setAttribute('aria-hidden', 'true');
@@ -366,11 +368,13 @@
     }
   }
 
-  function showBookingStatus() {
+  function showBookingStatus(moveFocus = true) {
     const status = $('booking-status');
     if (!status) return;
     status.hidden = false;
     status.textContent = bookingUrlWasProvided ? t('bookingInvalidUrl') : t('bookingNotConfigured');
+    if (!moveFocus) return;
+    status.focus({ preventScroll: true });
     status.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
   }
 
@@ -413,7 +417,7 @@
     if (!next) return;
     language = next;
     applyTranslations();
-    if ($('booking-status') && !$('booking-status').hidden) showBookingStatus();
+    if ($('booking-status') && !$('booking-status').hidden) showBookingStatus(false);
   });
 
   const menuButton = $('menu-toggle');
@@ -492,14 +496,22 @@
     if (event.key === 'Tab' && !lightbox.hidden) { event.preventDefault(); $('lightbox-close').focus(); }
   });
 
+  const revealObserver = 'IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? new IntersectionObserver(entries => {
+        entries.forEach(({target, isIntersecting}) => {
+          if (!isIntersecting) return;
+          target.classList.add('is-visible');
+          revealObserver.unobserve(target);
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' })
+    : null;
+
   function observeRevealElements() {
-    const items = [...document.querySelectorAll('.reveal:not(.is-visible)')];
-    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
-        if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
-      }), { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-      items.forEach(item => observer.observe(item));
-    } else items.forEach(item => item.classList.add('is-visible'));
+    if (!revealObserver) return;
+    document.querySelectorAll('.reveal:not(.will-reveal)').forEach(item => {
+      item.classList.add('will-reveal');
+      revealObserver.observe(item);
+    });
   }
 
   applyBranding();
