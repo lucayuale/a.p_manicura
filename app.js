@@ -103,7 +103,11 @@
     const hero = safeImageSource(config.images.hero);
     const manifesto = safeImageSource(config.images.manifesto);
     $('hero-image').hidden = !hero;
-    $('editorial-art').hidden = Boolean(hero);
+    // Keep the interactive palette when a studio photo replaces the hero illustration.
+    $('gallery-palette').hidden = !hero;
+    const paletteHost = hero ? $('gallery-palette') : $('hero-art');
+    const palette = $('editorial-art');
+    if (palette.parentElement !== paletteHost) paletteHost.append(palette);
     $('studio-photo').hidden = !manifesto;
     if (hero) $('hero-image').style.backgroundImage = `url("${hero.replaceAll('"', '%22')}")`;
     if (manifesto) $('manifesto-image').style.backgroundImage = `url("${manifesto.replaceAll('"', '%22')}")`;
@@ -145,6 +149,8 @@
 
   function makeServiceNode(service, index) {
     const action = mode === 'booking' ? document.createElement(bookingUrl && bookingMode === 'external' ? 'a' : 'button') : document.createElement('div');
+    action.id = 'service-' + service.id;
+    if (mode === 'basic') action.tabIndex = -1;
     action.className = 'service-row reveal' + (mode === 'basic' ? ' service-row-static' : '');
     if (action.tagName === 'A') {
       action.href = bookingUrl;
@@ -206,6 +212,10 @@
     list.dataset.showDuration = String(serviceDisplay.duration);
     list.replaceChildren();
     services.forEach((service, index) => list.append(makeServiceNode(service, index)));
+    const guide = $('service-guide');
+    const links = [...guide.querySelectorAll('a')];
+    links.forEach(link => { link.hidden = !$(link.hash.slice(1)); });
+    guide.hidden = links.every(link => link.hidden);
   }
 
   function renderGallery() {

@@ -217,7 +217,22 @@ window.VYB_CONFIG = {
       "bookingWhatsApp": "Ask on WhatsApp",
       "finishNude": "Soft nude",
       "finishWine": "Deep red",
-      "finishChrome": "Chrome finish"
+      "finishChrome": "Chrome finish",
+      "finishPicker": "Try a finish",
+      "finishChoiceNude": "Soft nude",
+      "finishChoiceWine": "Burgundy",
+      "finishChoiceChrome": "Chrome",
+      "guideTitle": "Find your manicure",
+      "guideNatural": "I want a natural look",
+      "guideLength": "I want extra length",
+      "guideDesign": "I want a design",
+      "faqTitle": "Before your appointment",
+      "faqPhotoQuestion": "Can I bring a reference photo?",
+      "faqPhotoAnswer": "Yes. You can also send it on WhatsApp when you get in touch to discuss your design.",
+      "faqRemovalQuestion": "What if I already have product on my nails?",
+      "faqRemovalAnswer": "Mention it when you get in touch and say which product you have, if you know. The studio can tell you whether it needs to be removed.",
+      "faqPriceQuestion": "How much does it cost and how long does it take?",
+      "faqPriceAnswer": "Send a WhatsApp message with the service you’re interested in and a reference photo if you have one."
     },
     "es": {
       "skip": "Saltar al contenido",
@@ -313,7 +328,22 @@ window.VYB_CONFIG = {
       "bookingWhatsApp": "Consultar por WhatsApp",
       "finishNude": "Nude suave",
       "finishWine": "Rojo intenso",
-      "finishChrome": "Efecto cromado"
+      "finishChrome": "Efecto cromado",
+      "finishPicker": "Probá un acabado",
+      "finishChoiceNude": "Nude suave",
+      "finishChoiceWine": "Bordó",
+      "finishChoiceChrome": "Cromado",
+      "guideTitle": "Encontrá tu manicura",
+      "guideNatural": "Quiero algo natural",
+      "guideLength": "Quiero sumar largo",
+      "guideDesign": "Quiero un diseño",
+      "faqTitle": "Antes de tu turno",
+      "faqPhotoQuestion": "¿Puedo llevar una foto de referencia?",
+      "faqPhotoAnswer": "Sí. También podés mandarla por WhatsApp al consultar por tu turno para conversar sobre el diseño.",
+      "faqRemovalQuestion": "¿Qué hago si ya tengo producto en las uñas?",
+      "faqRemovalAnswer": "Avisá al consultar por tu turno y contá qué producto tenés, si lo sabés. Así pueden decirte si hace falta un retiro.",
+      "faqPriceQuestion": "¿Dónde consulto el precio y la duración?",
+      "faqPriceAnswer": "Escribí por WhatsApp con el servicio que te interesa y, si tenés, una foto de referencia."
     }
   },
   "template": {
